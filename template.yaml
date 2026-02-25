@@ -1,0 +1,444 @@
+openapi: 3.0.3
+info:
+  title: IT-Wallet API - Statistics Template
+  version: 1.0.0
+  description: |
+    Standard template for implementing IT-Wallet authentication monitoring and statistics APIs. 
+    Caching strategy is designed to avoid data leaks and stale data. The API implements strict 
+    Cache-Control directives, including 'no-store', 'no-cache', 'private', and 'no-transform' 
+    with 'max-age=0' where appropriate to ensure data integrity and security.
+  termsOfService: https://www.region.example.it/legal-notes
+  contact:
+    name: IT-Wallet CREDENTIAL_SERVICE_NAME ISSUING_ENTITY
+    url: https://www.region.example.it
+    email: technical.support@region.example.it
+  license:
+    name: CC BY 4.0
+    url: https://creativecommons.org/licenses/by/4.0/
+  x-summary: IT-Wallet usage statistics for aggregated entities
+  x-api-id: 00000000-0000-0000-0000-000000000000
+tags:
+  - name: status
+    description: Service diagnostics and integrity monitoring
+  - name: statistics
+    description: Analysis of authentication flows for managed entities
+servers:
+  - url: https://api.production.region.example.it/v1
+    description: Production Server (Regional Hub)
+  - url: https://api.test.example.it/v1
+    description: Test and Sandbox Server
+security:
+  - BearerAuth: []
+paths:
+  /status:
+    get:
+      tags:
+        - status
+      summary: Service status verification
+      description: Returns the operational status of the API and the current version for health-check monitoring.
+      operationId: serviceStatus
+      responses:
+        "200":
+          description: Service operational and available
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ServiceStatus"
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/NoCache"
+            RateLimit-Limit:
+              $ref: "#/components/headers/RateLimitLimit"
+            RateLimit-Remaining:
+              $ref: "#/components/headers/RateLimitRemaining"
+            RateLimit-Reset:
+              $ref: "#/components/headers/RateLimitReset"
+        "429":
+          description: Request rate limit exceeded
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+          headers:
+            RateLimit-Limit:
+              $ref: "#/components/headers/RateLimitLimit"
+            RateLimit-Remaining:
+              $ref: "#/components/headers/RateLimitRemaining"
+            RateLimit-Reset:
+              $ref: "#/components/headers/RateLimitReset"
+        "503":
+          description: Service temporarily unavailable
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+          headers:
+            Retry-After:
+              $ref: "#/components/headers/RetryAfter"
+            RateLimit-Limit:
+              $ref: "#/components/headers/RateLimitLimit"
+            RateLimit-Remaining:
+              $ref: "#/components/headers/RateLimitRemaining"
+            RateLimit-Reset:
+              $ref: "#/components/headers/RateLimitReset"
+  /public-administrations:
+    get:
+      tags:
+        - statistics
+      summary: List of managed administrations
+      description: Retrieves the registry of IPA codes and names for the entities managed by the regional hub.
+      operationId: listPublicAdministrations
+      responses:
+        "200":
+          description: Administration registry retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdministrationRegistry"
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/NoCache"
+            RateLimit-Limit:
+              $ref: "#/components/headers/RateLimitLimit"
+            RateLimit-Remaining:
+              $ref: "#/components/headers/RateLimitRemaining"
+            RateLimit-Reset:
+              $ref: "#/components/headers/RateLimitReset"
+        "401":
+          description: Authentication failed
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+          headers:
+            WWW-Authenticate:
+              $ref: "#/components/headers/WWWAuthenticate"
+            RateLimit-Limit:
+              $ref: "#/components/headers/RateLimitLimit"
+            RateLimit-Remaining:
+              $ref: "#/components/headers/RateLimitRemaining"
+            RateLimit-Reset:
+              $ref: "#/components/headers/RateLimitReset"
+  /auth-stats:
+    post:
+      tags:
+        - statistics
+      summary: Query authentication statistics
+      description: Returns aggregated reports regarding authentication attempts for a specific time range. Filters are provided in the request body.
+      operationId: queryAuthenticationStatistics
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StatisticsQuery"
+      responses:
+        "200":
+          description: Authentication report generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthenticationReport"
+          headers:
+            Cache-Control:
+              $ref: "#/components/headers/NoCache"
+            RateLimit-Limit:
+              $ref: "#/components/headers/RateLimitLimit"
+            RateLimit-Remaining:
+              $ref: "#/components/headers/RateLimitRemaining"
+            RateLimit-Reset:
+              $ref: "#/components/headers/RateLimitReset"
+        "400":
+          description: Invalid query parameters or date range
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+          headers:
+            RateLimit-Limit:
+              $ref: "#/components/headers/RateLimitLimit"
+            RateLimit-Remaining:
+              $ref: "#/components/headers/RateLimitRemaining"
+            RateLimit-Reset:
+              $ref: "#/components/headers/RateLimitReset"
+        "403":
+          description: Access denied
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+          headers:
+            RateLimit-Limit:
+              $ref: "#/components/headers/RateLimitLimit"
+            RateLimit-Remaining:
+              $ref: "#/components/headers/RateLimitRemaining"
+            RateLimit-Reset:
+              $ref: "#/components/headers/RateLimitReset"
+        "429":
+          description: Too many requests
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+          headers:
+            RateLimit-Limit:
+              $ref: "#/components/headers/RateLimitLimit"
+            RateLimit-Remaining:
+              $ref: "#/components/headers/RateLimitRemaining"
+            RateLimit-Reset:
+              $ref: "#/components/headers/RateLimitReset"
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Authentication via Bearer Token compliant with PDND standards (RFC8725).
+
+  headers:
+    NoCache:
+      schema:
+        type: string
+        enum: [no-store, no-cache, private, max-age=0, no-transform, "no-store, no-cache, no-transform, private"]
+      description: |
+        Extensive cache control configuration to avoid data leaks or stale data. 
+        Supported directives include 'no-store' and 'no-cache' to prevent caching, 
+        'private' to restrict response to a single user, 'max-age' (set to 0) to 
+        force revalidation, and 'no-transform' to prevent proxy modifications.
+    RateLimitLimit:
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+    RateLimitRemaining:
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+    RateLimitReset:
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+    RetryAfter:
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+    WWWAuthenticate:
+      schema:
+        type: string
+
+  schemas:
+    ServiceStatus:
+      type: object
+      required: [status, version, timestamp, title, detail]
+      properties:
+        status:
+          type: string
+          example: OK
+        version:
+          type: string
+          example: 1.0.0
+        timestamp:
+          type: string
+          format: date-time
+          example: "2024-10-31T10:00:00Z"
+        title:
+          type: string
+          description: Short, human-readable summary of the problem.
+          example: Service Status
+        detail:
+          type: string
+          description: Detailed explanation.
+          example: The service is operational.
+
+    ProblemDetails:
+      type: object
+      required: [title, status, detail]
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+          format: int32
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+
+    AdministrationRegistry:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/AdministrationEntry"
+
+    AdministrationEntry:
+      type: object
+      required: [ipa, name]
+      properties:
+        ipa: 
+          type: string
+          example: r_piemon
+        name:
+          type: string
+          example: Piedmont Region
+
+    StatisticsQuery:
+      type: object
+      required: [period]
+      properties:
+        period:
+          type: object
+          required: [from, to]
+          properties:
+            from:
+              type: string
+              format: date
+              description: Start date of the analysis period (ISO 8601).
+              example: "2025-03-01"
+            to:
+              type: string
+              format: date
+              description: End date of the analysis period (ISO 8601).
+              example: "2025-03-31"
+        ipaCode:
+          type: string
+          description: Optional IPA code to filter data for a specific entity.
+          example: "c_h501"
+        limit:
+          type: integer
+          format: int32
+          default: 12
+          minimum: 1
+        offset:
+          type: integer
+          format: int32
+          default: 0
+          minimum: 0
+
+    AuthenticationReport:
+      type: object
+      required: [period, summary, pagination, breakdown]
+      properties:
+        period:
+          type: object
+          required: [from, to]
+          properties:
+            from:
+              type: string
+              format: date
+              description: The actual start date of the reported data.
+              example: "2025-03-01"
+            to:
+              type: string
+              format: date
+              description: The actual end date of the reported data.
+              example: "2025-03-31"
+        summary:
+          $ref: "#/components/schemas/AuthenticationStats"
+        pagination:
+          $ref: "#/components/schemas/PaginationMetadata"
+        breakdown:
+          type: array
+          description: Detailed analytical data. If a date range is provided, entries usually represent daily metrics. If ipaCode is omitted, entries may represent different managed entities.
+          items:
+            $ref: "#/components/schemas/BreakdownEntry"
+      example:
+        period:
+          from: "2025-03-01"
+          to: "2025-03-31"
+        summary:
+          total: 1500
+          success: 1450
+          failure:
+            total: 50
+            technical: 10
+            business: 40
+        pagination:
+          limit: 10
+          offset: 0
+          totalItems: 31
+        breakdown:
+          - label: "2025-03-01"
+            stats:
+              total: 100
+              success: 98
+              failure:
+                total: 2
+                technical: 0
+                business: 2
+          - label: "2025-03-02"
+            stats:
+              total: 120
+              success: 115
+              failure:
+                total: 5
+                technical: 1
+                business: 4
+
+    AuthenticationStats:
+      type: object
+      required: [total, success, failure]
+      properties:
+        total:
+          type: integer
+          format: int64
+          example: 1000
+        success:
+          type: integer
+          format: int64
+          example: 950
+        failure:
+          $ref: "#/components/schemas/FailureStats"
+
+    FailureStats:
+      type: object
+      required: [total, technical, business]
+      properties:
+        total:
+          type: integer
+          format: int64
+          example: 50
+        technical:
+          type: integer
+          format: int64
+          description: Failures due to infrastructure or backend errors.
+          example: 10
+        business:
+          type: integer
+          format: int64
+          description: Failures due to user authorization or business logic.
+          example: 40
+
+    BreakdownEntry:
+      type: object
+      required: [label, stats]
+      properties:
+        label:
+          type: string
+          description: The dimension identifier for this entry (e.g., a specific date or an entity IPA code).
+          example: "2025-03-15"
+        stats:
+          $ref: "#/components/schemas/AuthenticationStats"
+
+    PaginationMetadata:
+      type: object
+      required: [limit, offset, totalItems]
+      properties:
+        limit:
+          type: integer
+          format: int32
+        offset:
+          type: integer
+          format: int32
+        totalItems:
+          type: integer
+          format: int32
