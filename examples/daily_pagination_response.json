@@ -12,27 +12,27 @@
     {
       "label": "2025-03-11",
       "granularity": "daily",
-      "stats": { "total": 140 }
+      "stats": { "total": 140, "success": 135 }
     },
     {
       "label": "2025-03-12",
       "granularity": "daily",
-      "stats": { "total": 135 }
+      "stats": { "total": 135, "success": 130 }
     },
     {
       "label": "2025-03-13",
       "granularity": "daily",
-      "stats": { "total": 150 }
+      "stats": { "total": 150, "success": 145 }
     },
     {
       "label": "2025-03-14",
       "granularity": "daily",
-      "stats": { "total": 155 }
+      "stats": { "total": 155, "success": 150 }
     },
     {
       "label": "2025-03-15",
       "granularity": "daily",
-      "stats": { "total": 130 }
+      "stats": { "total": 130, "success": 125 }
     }
   ]
 }

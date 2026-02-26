@@ -80,7 +80,7 @@ paths:
       parameters:
         - name: limit
           in: query
-          description: Number of items to return (max 100).
+          description: Number of items to return (max 100). Limits are applied to prevent excessive server load.
           schema:
             type: integer
             format: int32
@@ -460,6 +460,7 @@ components:
           default: 10
           minimum: 1
           maximum: 100
+          description: Number of items to return (max 100). Limits are applied to prevent excessive server load.
         offset:
           type: integer
           format: int32
@@ -515,7 +516,7 @@ components:
 
     AuthenticationStats:
       type: object
-      required: [total]
+      required: [success]
       properties:
         total:
           type: integer
@@ -530,7 +531,6 @@ components:
 
     FailureStats:
       type: object
-      required: [total]
       properties:
         total:
           type: integer
@@ -570,6 +570,7 @@ components:
           type: integer
           format: int32
           maximum: 100
+          description: Number of items returned in the current page (max 100).
         offset:
           type: integer
           format: int32
