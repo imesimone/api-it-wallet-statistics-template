@@ -516,7 +516,7 @@ components:
 
     AuthenticationStats:
       type: object
-      required: [total, success, failure]
+      required: [total]
       properties:
         total:
           type: integer
@@ -531,7 +531,7 @@ components:
 
     FailureStats:
       type: object
-      required: [total, technical, business]
+      required: [total]
       properties:
         total:
           type: integer
