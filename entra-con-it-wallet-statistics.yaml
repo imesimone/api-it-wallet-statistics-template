@@ -1,27 +1,26 @@
 openapi: 3.0.3
 info:
-  title: IT-Wallet API - Statistics Template
+  title: Entra con IT-Wallet - Statistics
   version: 1.0.0
   description: |
-    Standard template for implementing IT-Wallet authentication monitoring and statistics APIs. 
+    Standard template for implementing "Entra con IT-Wallet" authentication monitoring and statistics APIs. 
     Caching strategy is designed to avoid data leaks and stale data. The API implements strict 
     Cache-Control directives, including 'no-store', 'no-cache', 'private', and 'no-transform' 
     with 'max-age=0' where appropriate to ensure data integrity and security.
   termsOfService: https://www.regione.toscana.it/note-legali
   contact:
-    name: IT-Wallet CREDENTIAL_SERVICE_NAME ISSUING_ENTITY
+    name: Entra con IT-Wallet Regione Toscana
     url: https://www.regione.toscana.it
     email: technical.support@regione.toscana.it
   license:
     name: EUPL-1.2
     url: https://joinup.ec.europa.eu/page/eupl-text-11-12
-  x-summary: IT-Wallet usage statistics for aggregated entities
-  x-api-id: 00000000-0000-0000-0000-000000000000
+  x-summary: "Entra con IT-Wallet" usage statistics for aggregated entities
 tags:
   - name: status
     description: Service diagnostics and integrity monitoring
   - name: statistics
-    description: Analysis of authentication flows for managed entities
+    description: Analysis of "Entra con IT-Wallet" authentication flows for managed entities
 servers:
   - url: https://api.production.regione.toscana.it/v1
     description: Production Server (Regional Hub)
