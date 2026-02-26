@@ -15,7 +15,8 @@ info:
   license:
     name: EUPL-1.2
     url: https://joinup.ec.europa.eu/page/eupl-text-11-12
-  x-summary: "Entra con IT-Wallet" usage statistics for aggregated entities
+  x-summary: |
+    "Entra con IT-Wallet" usage statistics for aggregated entities
 tags:
   - name: status
     description: Service diagnostics and integrity monitoring
@@ -23,9 +24,7 @@ tags:
     description: Analysis of "Entra con IT-Wallet" authentication flows for managed entities
 servers:
   - url: https://api.production.regione.toscana.it/v1
-    description: Production Server (Regional Hub)
-  - url: https://api.test.regione.toscana.it/v1
-    description: Test and Sandbox Server
+    description: Production Server
 security:
   - BearerAuth: []
 paths:
@@ -397,7 +396,7 @@ components:
       type: object
       required: [ipa, name]
       properties:
-        ipa: 
+        ipa:
           type: string
           example: r_toscan
         name:
